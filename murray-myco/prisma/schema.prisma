@@ -1,0 +1,59 @@
+// Prisma Schema for product architecture and relationships
+// PostgreSQL target. Run `npx prisma generate` after configuring DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?
+  products    Product[]
+  colorHex    String     @default("#6b7280") // species-specific hue
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id            String        @id @default(cuid())
+  sku           String        @unique
+  name          String
+  summary       String?
+  detailsMd     String?       // rich product detail
+  categoryId    String
+  category      Category      @relation(fields: [categoryId], references: [id])
+  variants      Variant[]
+  relationships ProductRelation[] @relation("ProductRelations")
+  relatedTo     ProductRelation[] @relation("ProductRelatedTo")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Variant {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  name        String
+  priceCents  Int
+  unit        String   // e.g., "mL", "g", "block"
+  stock       Int      @default(0)
+  isActive    Boolean  @default(true)
+}
+
+// Self-referential product mapping to visualize mycelial connections
+model ProductRelation {
+  id          String  @id @default(cuid())
+  fromId      String
+  toId        String
+  relation    String  // e.g., "derived_from", "complements", "substrate_for"
+  strength    Int     @default(1)
+  from        Product @relation("ProductRelations", fields: [fromId], references: [id])
+  to          Product @relation("ProductRelatedTo", fields: [toId], references: [id])
+}
