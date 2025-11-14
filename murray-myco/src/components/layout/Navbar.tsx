@@ -30,7 +30,7 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
-            style={{ minWidth: '44px', minHeight: '44px' }}
+            style={{ minWidth: '44px', minHeight: '44px', background: 'transparent', color: 'white' }}
           >
             <svg
               className="w-6 h-6 text-white"

@@ -240,9 +240,17 @@ export default function BackgroundMyceliumGPU() {
               case 2u: { pos.y = (pos.y + 1u) % params.gridH; }
               default: { pos.y = (pos.y + params.gridH - 1u) % params.gridH; }
             }
-            // 4-neighborhood check in occRead
+            // Self-avoiding: check if current position is occupied
             let gx = i32(pos.x);
             let gy = i32(pos.y);
+            let currentOccupied = textureLoad(occRead, vec2<i32>(gx, gy), 0).a > 0.0;
+
+            // If already occupied, skip this step (self-avoiding)
+            if (currentOccupied) {
+              continue;
+            }
+
+            // 4-neighborhood check in occRead (not including diagonals)
             let l = (gx + gw - 1) % gw;
             let r = (gx + 1) % gw;
             let u = (gy + gh - 1) % gh;
@@ -253,6 +261,7 @@ export default function BackgroundMyceliumGPU() {
               textureLoad(occRead, vec2<i32>(gx, u), 0).a > 0.0 ||
               textureLoad(occRead, vec2<i32>(gx, d), 0).a > 0.0;
             if (near) {
+              // Stick single pixel only (thin mycelium branches)
               textureStore(occWrite, vec2<i32>(gx, gy), vec4<f32>(0.0, 0.0, 0.0, 1.0));
               // update radius^2 atomically using toroidal (wrapped) distance
               var dx = wrap_delta(gx - cx, gw);

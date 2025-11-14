@@ -59,9 +59,9 @@ export const useMyceliumSettings = create<
   growthSpeed: 0.35,
   attractionStrength: 0.85,
   opacity: 1, // Math.max(env.NEXT_PUBLIC_MYCELIUM_OPACITY, 0.8),
-  devicePixelRatioCap: isMobile ? 0.5 : 1, // Lower resolution on mobile (50%)
+  devicePixelRatioCap: isMobile ? 0.35 : 0.5, // Lower resolution for pixelated look
   gridAlign: 32,
-  gridSize: isMobile ? 128 : 512, // Much smaller grid on mobile (128 vs 512)
+  gridSize: isMobile ? 128 : 256, // Smaller grids for classic DLA look (256 vs 512)
   seeds: 1,
   walkers: isMobile ? 100 : 200, // Very sparse: 100 mobile, 200 desktop
   stepsPerFrame: isMobile ? 2 : 4, // Slower growth for sparser look

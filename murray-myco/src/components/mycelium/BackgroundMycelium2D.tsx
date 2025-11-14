@@ -153,12 +153,20 @@ export default function BackgroundMycelium2D() {
         if (y < 0) y = gh - 1; if (y >= gh) y = 0;
 
         const idx = y * gw + x;
+
+        // Self-avoiding: if walker lands on occupied cell, reject and continue random walk
+        if (occ[idx]) {
+          // Don't stick, just continue walking (no update to position)
+          continue;
+        }
+
         let near = false;
-        // Expand stick radius to speed up visible propagation (Manhattan radius from settings)
-        for (let oy = -twoDFallbackStickManhattanRadius; oy <= twoDFallbackStickManhattanRadius && !near; oy++) {
-          for (let ox = -2; ox <= 2; ox++) {
+        // Check if adjacent to structure (4-neighborhood only for thin branches)
+        for (let oy = -1; oy <= 1 && !near; oy++) {
+          for (let ox = -1; ox <= 1; ox++) {
             if (ox === 0 && oy === 0) continue;
-            if (Math.abs(ox) + Math.abs(oy) > twoDFallbackStickManhattanRadius) continue;
+            // Only check 4-neighborhood (not diagonals) for thinner branches
+            if (Math.abs(ox) + Math.abs(oy) > 1) continue;
             const nx = (x + ox + gw) % gw;
             const ny = (y + oy + gh) % gh;
             if (occ[ny * gw + nx]) { near = true; break; }
@@ -166,14 +174,8 @@ export default function BackgroundMycelium2D() {
         }
 
       if (near) {
-        // Thicken structure from settings
-        for (let oy = -twoDFallbackThickenRadius; oy <= twoDFallbackThickenRadius; oy++) {
-          for (let ox = -twoDFallbackThickenRadius; ox <= twoDFallbackThickenRadius; ox++) {
-            const nx = (x + ox + gw) % gw;
-            const ny = (y + oy + gh) % gh;
-            occ[ny * gw + nx] = 255;
-          }
-        }
+        // Stick this single pixel only (no thickening for mycelium-like thin branches)
+        occ[idx] = 255;
         // respawn
         w[i * 2 + 0] = Math.floor(Math.random() * gw);
         w[i * 2 + 1] = Math.floor(Math.random() * gh);
