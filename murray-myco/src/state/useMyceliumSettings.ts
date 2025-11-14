@@ -7,6 +7,11 @@ import { env } from "@/lib/env";
 const isMobile = typeof window !== 'undefined' &&
   (window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 
+// Log device type for debugging
+if (typeof window !== 'undefined') {
+  console.log('[Settings] Device type:', isMobile ? 'Mobile' : 'Desktop');
+}
+
 export type MyceliumSettings = {
   algorithm: "dla" | "slime";
   particleCount: number;
@@ -54,12 +59,12 @@ export const useMyceliumSettings = create<
   growthSpeed: 0.35,
   attractionStrength: 0.85,
   opacity: 1, // Math.max(env.NEXT_PUBLIC_MYCELIUM_OPACITY, 0.8),
-  devicePixelRatioCap: isMobile ? 0.75 : 1, // Lower resolution on mobile
+  devicePixelRatioCap: isMobile ? 0.5 : 1, // Lower resolution on mobile (50%)
   gridAlign: 32,
-  gridSize: isMobile ? 256 : 512, // Smaller grid on mobile
+  gridSize: isMobile ? 128 : 512, // Much smaller grid on mobile (128 vs 512)
   seeds: 1,
-  walkers: isMobile ? 800 : 1500, // Fewer walkers on mobile
-  stepsPerFrame: isMobile ? 4 : 8, // Fewer steps on mobile
+  walkers: isMobile ? 300 : 1500, // Far fewer walkers on mobile (300 vs 1500)
+  stepsPerFrame: isMobile ? 2 : 8, // Fewer steps on mobile (2 vs 8)
   biasToPointer: 0.1,
   workgroupSize: 64,
   ringOuterMinPx: 12,
@@ -70,15 +75,15 @@ export const useMyceliumSettings = create<
   respawnMarginFrac: 0.04,
   ringRefreshInterval: 128,
   torusEdgePadPx: 2,
-  twoDFallbackSeedRadius: 2,
-  twoDFallbackStickManhattanRadius: 2,
-  twoDFallbackThickenRadius: 1,
+  twoDFallbackSeedRadius: isMobile ? 1 : 2,
+  twoDFallbackStickManhattanRadius: isMobile ? 1 : 2,
+  twoDFallbackThickenRadius: isMobile ? 0 : 1,
   slimeSensorAngleMilliRad: 785, // ~pi/4
-  slimeSensorDistance: 20,
+  slimeSensorDistance: isMobile ? 15 : 20, // Shorter sensor distance on mobile
   slimeTurnAngleMilliRad: 600,   // a bit larger turns
   slimeMoveSpeedMilliPx: 100,    // 0.3 px/step
-  slimeDepositMilli: 120,        // less trail intensity
-  slimeDecayMilli: 20,           // faster fade
+  slimeDepositMilli: isMobile ? 150 : 120,  // More visible on mobile
+  slimeDecayMilli: isMobile ? 15 : 20,      // Slightly slower fade on mobile
   slimeSpawnMode: "center",
   slimeSpawnRadiusFrac: 0.03,
   slimeDiffuse: 0.08,

@@ -26,13 +26,14 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden ml-auto p-2 rounded-md hover:bg-foreground/10 transition-colors"
+            className="md:hidden ml-auto p-3 rounded-md hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
+            style={{ minWidth: '44px', minHeight: '44px' }}
           >
             <svg
-              className="w-6 h-6"
+              className="w-6 h-6 text-white"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -52,32 +53,32 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-black/5 dark:border-white/10 bg-background/95 backdrop-blur-md">
-          <div className="px-4 py-3 space-y-2">
+        <div className="md:hidden border-b border-white/10 bg-[#16161d]/98 backdrop-blur-md">
+          <div className="px-4 py-3 space-y-1">
             <NavLink
               href="/consumer"
-              className="block py-2 hover:underline"
+              className="block py-3 px-3 hover:bg-white/10 rounded-md transition-colors touch-manipulation text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               Culinary
             </NavLink>
             <NavLink
               href="/consumer"
-              className="block py-2 hover:underline"
+              className="block py-3 px-3 hover:bg-white/10 rounded-md transition-colors touch-manipulation text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               Medicinal
             </NavLink>
             <NavLink
               href="/lab"
-              className="block py-2 hover:underline"
+              className="block py-3 px-3 hover:bg-white/10 rounded-md transition-colors touch-manipulation text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               Cultures
             </NavLink>
             <NavLink
               href="/about"
-              className="block py-2 hover:underline"
+              className="block py-3 px-3 hover:bg-white/10 rounded-md transition-colors touch-manipulation text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               About Us
