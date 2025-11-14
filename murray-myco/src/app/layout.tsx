@@ -43,8 +43,8 @@ export default function RootLayout({
 }>) {
   // Client hook inside server layout is unsafe; so delegate to a client wrapper
   return (
-    <html lang="en" className="dark" style={{ colorScheme: 'dark' }}>
-      <body className={`${inter.variable} ${sourceSans.variable} antialiased bg-background text-foreground`}>
+    <html lang="en" className="dark" style={{ colorScheme: 'dark', backgroundColor: '#16161d' }}>
+      <body className={`${inter.variable} ${sourceSans.variable} antialiased bg-background text-foreground`} style={{ backgroundColor: '#16161d', color: '#ffffff' }}>
         <Providers>
           <Navbar />
           <BackgroundToggle />

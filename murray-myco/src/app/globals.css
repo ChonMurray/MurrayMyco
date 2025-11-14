@@ -52,7 +52,8 @@
   --font-mono: var(--font-inter);
 }
 
-@media (prefers-color-scheme: light) {
+/* Remove light mode - force dark mode always */
+/* @media (prefers-color-scheme: light) {
   :root {
     --background: var(--bg-light);
     --foreground: var(--fg-primary);
@@ -62,7 +63,7 @@
     --border: color-mix(in srgb, var(--foreground) 10%, var(--background));
     --ring: color-mix(in srgb, var(--foreground) 18%, transparent);
   }
-}
+} */
 
 body {
   background: var(--background);
