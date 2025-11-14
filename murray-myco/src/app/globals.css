@@ -7,9 +7,12 @@
   --bg-light: #f6f7f9;
   --bg-dark: #16161d;
 
-  /* Derived aliases used throughout the app */
+  /* Derived aliases used throughout the app - default to dark mode */
   --background: var(--bg-dark);
   --foreground: var(--fg-primary);
+
+  /* Force dark mode color scheme */
+  color-scheme: dark;
 
   /* Derived utility tokens (computed from the four core colors) */
   --muted: color-mix(in srgb, var(--foreground) 20%, var(--background));

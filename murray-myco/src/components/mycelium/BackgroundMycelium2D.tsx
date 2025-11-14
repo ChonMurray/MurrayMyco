@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMyceliumSettings } from "@/state/useMyceliumSettings";
 
 export default function BackgroundMycelium2D() {
   const {
+    opacity,
     walkers,
     stepsPerFrame,
     devicePixelRatioCap,
@@ -14,6 +15,7 @@ export default function BackgroundMycelium2D() {
     twoDFallbackThickenRadius,
   } = useMyceliumSettings();
 
+  const [mounted, setMounted] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   // These are recreated on mount/resize as needed
   const occRef = useRef<Uint8Array>(new Uint8Array(1));
@@ -34,8 +36,15 @@ export default function BackgroundMycelium2D() {
     return { gw, gh };
   };
 
+  // Mount effect
+  useEffect(() => {
+    setMounted(true);
+    console.log("[DLA2D] Component mounted");
+  }, []);
+
   // Resolve CSS color once per mount
   useEffect(() => {
+    if (!mounted) return;
     const parseCssColor = (css: string): { r: number; g: number; b: number } => {
       const s = css.trim();
       if (s.startsWith("#")) {
@@ -54,23 +63,34 @@ export default function BackgroundMycelium2D() {
     };
     const cssColor = getComputedStyle(document.documentElement).getPropertyValue("--fg-primary") || "#ffffff";
     colorRef.current = parseCssColor(cssColor);
-  }, []);
+    console.log("[DLA2D] Color resolved:", colorRef.current);
+  }, [mounted]);
 
   // Randomize walkers
   useEffect(() => {
+    if (!mounted) return;
     const { gw, gh } = computeGrid();
     const w = walkersRef.current;
     for (let i = 0; i < walkers; i += 1) {
       w[i * 2 + 0] = Math.floor(Math.random() * gw);
       w[i * 2 + 1] = Math.floor(Math.random() * gh);
     }
-  }, [walkers, devicePixelRatioCap]);
+    console.log("[DLA2D] Walkers initialized:", walkers);
+  }, [mounted, walkers, devicePixelRatioCap]);
 
   useEffect(() => {
+    if (!mounted) return;
     const canvas = canvasRef.current;
-    if (!canvas) fail("Canvas ref is null");
+    if (!canvas) {
+      console.warn("[DLA2D] Canvas ref is null, skipping");
+      return;
+    }
     const ctx = (canvas as HTMLCanvasElement).getContext("2d");
-    if (!ctx) fail("2D context unavailable");
+    if (!ctx) {
+      console.error("[DLA2D] 2D context unavailable");
+      return;
+    }
+    console.log("[DLA2D] Animation starting...");
 
     const { gw, gh } = computeGrid();
     (canvas as HTMLCanvasElement).width = gw;
@@ -182,14 +202,16 @@ export default function BackgroundMycelium2D() {
     };
 
     rafRef.current = requestAnimationFrame(loop);
+    console.log("[DLA2D] Animation loop started");
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", handleResize);
+      console.log("[DLA2D] Animation stopped");
     };
-  }, [walkers, stepsPerFrame, devicePixelRatioCap]);
+  }, [mounted, walkers, stepsPerFrame, devicePixelRatioCap]);
 
   return (
-    <div aria-hidden className="myco-bg fixed inset-0 z-0 pointer-events-none">
+    <div aria-hidden className="myco-bg fixed inset-0 z-0 pointer-events-none" data-opacity={opacity}>
       <canvas ref={canvasRef} className="myco-canvas" />
     </div>
   );
