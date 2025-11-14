@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -23,6 +23,17 @@ const sourceSans = Source_Sans_3({
 export const metadata: Metadata = {
   title: env.NEXT_PUBLIC_APP_NAME,
   description: "Biomimetic mycelium-inspired experience",
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f6f7f9' },
+    { media: '(prefers-color-scheme: dark)', color: '#16161d' },
+  ],
 };
 
 export default function RootLayout({

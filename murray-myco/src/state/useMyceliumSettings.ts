@@ -3,6 +3,10 @@
 import { create } from "zustand";
 import { env } from "@/lib/env";
 
+// Detect mobile device for performance optimization
+const isMobile = typeof window !== 'undefined' &&
+  (window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+
 export type MyceliumSettings = {
   algorithm: "dla" | "slime";
   particleCount: number;
@@ -50,12 +54,12 @@ export const useMyceliumSettings = create<
   growthSpeed: 0.35,
   attractionStrength: 0.85,
   opacity: 1, // Math.max(env.NEXT_PUBLIC_MYCELIUM_OPACITY, 0.8),
-  devicePixelRatioCap: 1,
+  devicePixelRatioCap: isMobile ? 0.75 : 1, // Lower resolution on mobile
   gridAlign: 32,
-  gridSize: 512,
+  gridSize: isMobile ? 256 : 512, // Smaller grid on mobile
   seeds: 1,
-  walkers: 1500,
-  stepsPerFrame: 8,
+  walkers: isMobile ? 800 : 1500, // Fewer walkers on mobile
+  stepsPerFrame: isMobile ? 4 : 8, // Fewer steps on mobile
   biasToPointer: 0.1,
   workgroupSize: 64,
   ringOuterMinPx: 12,

@@ -70,14 +70,46 @@ body {
   font-size: var(--body-size);
   line-height: var(--body-line);
   font-weight: var(--body-weight);
+  /* Mobile optimizations */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Prevent text size adjustment on orientation change */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Improve scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Global element defaults using unified palette */
-a { color: var(--fg-primary); text-decoration-color: color-mix(in srgb, var(--fg-primary) 50%, transparent); }
+a {
+  color: var(--fg-primary);
+  text-decoration-color: color-mix(in srgb, var(--fg-primary) 50%, transparent);
+  /* Touch-friendly tap target */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
 hr, .border { border-color: var(--border); }
-input, select, textarea { border-color: var(--border); outline-color: var(--ring); }
-button { color: var(--background); background: var(--fg-primary); }
+input, select, textarea {
+  border-color: var(--border);
+  outline-color: var(--ring);
+  /* Touch-friendly inputs */
+  min-height: 44px;
+  font-size: 16px; /* Prevent zoom on iOS */
+}
+button {
+  color: var(--background);
+  background: var(--fg-primary);
+  /* Touch-friendly buttons */
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 button:hover { filter: brightness(0.95); }
+button:active { filter: brightness(0.9); }
 
 /* Unify background container and canvas styles */
 .myco-bg {
