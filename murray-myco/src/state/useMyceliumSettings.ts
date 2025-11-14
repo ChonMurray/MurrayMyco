@@ -63,8 +63,8 @@ export const useMyceliumSettings = create<
   gridAlign: 32,
   gridSize: isMobile ? 128 : 512, // Much smaller grid on mobile (128 vs 512)
   seeds: 1,
-  walkers: isMobile ? 300 : 1500, // Far fewer walkers on mobile (300 vs 1500)
-  stepsPerFrame: isMobile ? 2 : 8, // Fewer steps on mobile (2 vs 8)
+  walkers: isMobile ? 100 : 200, // Very sparse: 100 mobile, 200 desktop
+  stepsPerFrame: isMobile ? 2 : 4, // Slower growth for sparser look
   biasToPointer: 0.1,
   workgroupSize: 64,
   ringOuterMinPx: 12,

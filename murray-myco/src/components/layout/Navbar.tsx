@@ -26,7 +26,7 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden ml-auto p-3 rounded-md hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation"
+            className="md:hidden ml-auto p-2 touch-manipulation"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
