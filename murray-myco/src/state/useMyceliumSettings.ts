@@ -54,7 +54,7 @@ export const useMyceliumSettings = create<
     setOpacity: (v: number) => void;
   }
 >((set) => ({
-  algorithm: "slime",
+  algorithm: "dla",
   particleCount: 100,
   growthSpeed: 0.35,
   attractionStrength: 0.85,

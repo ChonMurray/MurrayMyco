@@ -3,30 +3,29 @@
 import { useEffect, useRef, useState } from "react";
 import { useMyceliumSettings } from "@/state/useMyceliumSettings";
 
+interface Particle {
+  x: number;
+  y: number;
+  r: number;
+}
+
 export default function BackgroundMycelium2D() {
   const {
     opacity,
-    walkers,
+    walkers: maxWalkers,
     stepsPerFrame,
     devicePixelRatioCap,
     gridAlign,
-    twoDFallbackSeedRadius,
-    twoDFallbackStickManhattanRadius,
-    twoDFallbackThickenRadius,
   } = useMyceliumSettings();
 
   const [mounted, setMounted] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // These are recreated on mount/resize as needed
-  const occRef = useRef<Uint8Array>(new Uint8Array(1));
-  const walkersRef = useRef<Float32Array>(new Float32Array(walkers * 2));
+  const treeRef = useRef<Particle[]>([]);
+  const walkersRef = useRef<Particle[]>([]);
+  const radiusRef = useRef<number>(8);
+  const shrinkRef = useRef<number>(0.995);
   const rafRef = useRef<number | null>(null);
-  const frameIndexRef = useRef<number>(0);
   const colorRef = useRef<{ r: number; g: number; b: number }>({ r: 255, g: 255, b: 255 });
-
-  const fail = (message: string): never => {
-    throw new Error(`[DLA2D-FAIL] ${message}`);
-  };
 
   const computeGrid = () => {
     const dpr = Math.min(Math.max(window.devicePixelRatio || 1, 1), devicePixelRatioCap);
@@ -34,6 +33,23 @@ export default function BackgroundMycelium2D() {
     const gw = roundUp(window.innerWidth * dpr, gridAlign);
     const gh = roundUp(window.innerHeight * dpr, gridAlign);
     return { gw, gh };
+  };
+
+  const createWalker = (gw: number, gh: number, radius: number): Particle => {
+    const ang = Math.random() * 2 * Math.PI;
+    const x = gw / 2 + radius * Math.cos(ang);
+    const y = gh / 2 + radius * Math.sin(ang);
+    return { x, y, r: 3 };
+  };
+
+  const checkStuck = (walker: Particle, tree: Particle[]): boolean => {
+    for (const particle of tree) {
+      const d = Math.sqrt((walker.x - particle.x) ** 2 + (walker.y - particle.y) ** 2);
+      if (d < walker.r + particle.r) {
+        return true;
+      }
+    }
+    return false;
   };
 
   // Mount effect
@@ -66,18 +82,6 @@ export default function BackgroundMycelium2D() {
     console.log("[DLA2D] Color resolved:", colorRef.current);
   }, [mounted]);
 
-  // Randomize walkers
-  useEffect(() => {
-    if (!mounted) return;
-    const { gw, gh } = computeGrid();
-    const w = walkersRef.current;
-    for (let i = 0; i < walkers; i += 1) {
-      w[i * 2 + 0] = Math.floor(Math.random() * gw);
-      w[i * 2 + 1] = Math.floor(Math.random() * gh);
-    }
-    console.log("[DLA2D] Walkers initialized:", walkers);
-  }, [mounted, walkers, devicePixelRatioCap]);
-
   useEffect(() => {
     if (!mounted) return;
     const canvas = canvasRef.current;
@@ -85,7 +89,7 @@ export default function BackgroundMycelium2D() {
       console.warn("[DLA2D] Canvas ref is null, skipping");
       return;
     }
-    const ctx = (canvas as HTMLCanvasElement).getContext("2d");
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
       console.error("[DLA2D] 2D context unavailable");
       return;
@@ -93,113 +97,78 @@ export default function BackgroundMycelium2D() {
     console.log("[DLA2D] Animation starting...");
 
     const { gw, gh } = computeGrid();
-    (canvas as HTMLCanvasElement).width = gw;
-    (canvas as HTMLCanvasElement).height = gh;
-    (ctx as CanvasRenderingContext2D).imageSmoothingEnabled = false;
+    console.log("[DLA2D] Grid size:", gw, "x", gh);
+    canvas.width = gw;
+    canvas.height = gh;
+    ctx.imageSmoothingEnabled = false;
+
     const handleResize = () => {
       const { gw: nw, gh: nh } = computeGrid();
-      if ((canvas as HTMLCanvasElement).width !== nw || (canvas as HTMLCanvasElement).height !== nh) {
-        (canvas as HTMLCanvasElement).width = nw;
-        (canvas as HTMLCanvasElement).height = nh;
-        const newOcc = new Uint8Array(nh * nw);
-        occRef.current = newOcc;
-        // re-seed
-        const cx = Math.floor(nw / 2);
-        const cy = Math.floor(nh / 2);
-        for (let oy = -2; oy <= 2; oy++) {
-          for (let ox = -2; ox <= 2; ox++) {
-            const nx = (cx + ox + nw) % nw;
-            const ny = (cy + oy + nh) % nh;
-            newOcc[ny * nw + nx] = 255;
-          }
+      if (canvas.width !== nw || canvas.height !== nh) {
+        canvas.width = nw;
+        canvas.height = nh;
+        // Reset simulation
+        treeRef.current = [{ x: nw / 2, y: nh / 2, r: 3 }];
+        walkersRef.current = [];
+        radiusRef.current = Math.min(nw, nh) / 2;
+        for (let i = 0; i < maxWalkers; i++) {
+          radiusRef.current *= shrinkRef.current;
+          walkersRef.current.push(createWalker(nw, nh, radiusRef.current));
         }
       }
-      // styles handled by CSS class
     };
     window.addEventListener("resize", handleResize);
 
-    const image = (ctx as CanvasRenderingContext2D).createImageData(gw, gh);
-    const pixels = image.data; // Uint8ClampedArray RGBA
-    const occ = (occRef.current = new Uint8Array(gh * gw));
-    // seed center blob
-    const scx = Math.floor(gw / 2);
-    const scy = Math.floor(gh / 2);
-    for (let oy = -twoDFallbackSeedRadius; oy <= twoDFallbackSeedRadius; oy++) {
-      for (let ox = -twoDFallbackSeedRadius; ox <= twoDFallbackSeedRadius; ox++) {
-        const nx = (scx + ox + gw) % gw;
-        const ny = (scy + oy + gh) % gh;
-        occ[ny * gw + nx] = 255;
-      }
-    }
-    const w = walkersRef.current;
+    // Initialize: seed at center
+    treeRef.current = [{ x: gw / 2, y: gh / 2, r: 3 }];
+    walkersRef.current = [];
+    radiusRef.current = Math.min(gw, gh) / 2;
+    console.log("[DLA2D] Seed at:", gw / 2, gh / 2, "Initial radius:", radiusRef.current);
 
-    // first paint will happen in loop; nothing drawn here
+    // Spawn initial walkers
+    for (let i = 0; i < maxWalkers; i++) {
+      radiusRef.current *= shrinkRef.current;
+      walkersRef.current.push(createWalker(gw, gh, radiusRef.current));
+    }
+    console.log("[DLA2D] Spawned", walkersRef.current.length, "initial walkers");
 
     const loop = () => {
-      // steps
-      for (let step = 0; step < stepsPerFrame; step++) {
-        const i = Math.floor(Math.random() * walkers);
-        let x = w[i * 2 + 0];
-        let y = w[i * 2 + 1];
+      // Clear background
+      ctx.fillStyle = "rgba(0, 0, 0, 0)";
+      ctx.clearRect(0, 0, gw, gh);
 
-        // Random 4-neighborhood walk
-        switch (Math.floor(Math.random() * 4)) {
-          case 0: x += 1; break;
-          case 1: x -= 1; break;
-          case 2: y += 1; break;
-          default: y -= 1; break;
-        }
-        if (x < 0) x = gw - 1; if (x >= gw) x = 0;
-        if (y < 0) y = gh - 1; if (y >= gh) y = 0;
+      // Draw only the tree (structure)
+      const { r, g, b } = colorRef.current;
+      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      for (const particle of treeRef.current) {
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.r, 0, 2 * Math.PI);
+        ctx.fill();
+      }
 
-        const idx = y * gw + x;
+      // Update walkers (multiple iterations per frame)
+      for (let n = 0; n < stepsPerFrame; n++) {
+        for (let i = walkersRef.current.length - 1; i >= 0; i--) {
+          const walker = walkersRef.current[i];
+          // Random walk
+          const angle = Math.random() * 2 * Math.PI;
+          walker.x += Math.cos(angle);
+          walker.y += Math.sin(angle);
 
-        // Self-avoiding: if walker lands on occupied cell, reject and continue random walk
-        if (occ[idx]) {
-          // Don't stick, just continue walking (no update to position)
-          continue;
-        }
-
-        let near = false;
-        // Check if adjacent to structure (4-neighborhood only for thin branches)
-        for (let oy = -1; oy <= 1 && !near; oy++) {
-          for (let ox = -1; ox <= 1; ox++) {
-            if (ox === 0 && oy === 0) continue;
-            // Only check 4-neighborhood (not diagonals) for thinner branches
-            if (Math.abs(ox) + Math.abs(oy) > 1) continue;
-            const nx = (x + ox + gw) % gw;
-            const ny = (y + oy + gh) % gh;
-            if (occ[ny * gw + nx]) { near = true; break; }
+          // Check if stuck
+          if (checkStuck(walker, treeRef.current)) {
+            treeRef.current.push(walker);
+            walkersRef.current.splice(i, 1);
           }
         }
-
-      if (near) {
-        // Stick this single pixel only (no thickening for mycelium-like thin branches)
-        occ[idx] = 255;
-        // respawn
-        w[i * 2 + 0] = Math.floor(Math.random() * gw);
-        w[i * 2 + 1] = Math.floor(Math.random() * gh);
-      } else {
-        w[i * 2 + 0] = x;
-        w[i * 2 + 1] = y;
-      }
       }
 
-      // render only permanent occupancy: clear and draw occ==255 in CSS primary foreground color
-      pixels.fill(0);
-      const { r, g, b } = colorRef.current;
-      for (let i = 0; i < occ.length; i++) {
-        if (occ[i]) {
-          const pi = i * 4;
-          pixels[pi + 0] = r;
-          pixels[pi + 1] = g;
-          pixels[pi + 2] = b;
-          pixels[pi + 3] = 255;
-        }
+      // Spawn new walkers to maintain maxWalkers
+      while (walkersRef.current.length < maxWalkers && radiusRef.current > 1) {
+        radiusRef.current *= shrinkRef.current;
+        walkersRef.current.push(createWalker(gw, gh, radiusRef.current));
       }
 
-      (ctx as CanvasRenderingContext2D).putImageData(image, 0, 0);
-      frameIndexRef.current += 1;
       rafRef.current = requestAnimationFrame(loop);
     };
 
@@ -210,7 +179,7 @@ export default function BackgroundMycelium2D() {
       window.removeEventListener("resize", handleResize);
       console.log("[DLA2D] Animation stopped");
     };
-  }, [mounted, walkers, stepsPerFrame, devicePixelRatioCap]);
+  }, [mounted, maxWalkers, stepsPerFrame, devicePixelRatioCap, gridAlign]);
 
   return (
     <div aria-hidden className="myco-bg fixed inset-0 z-0 pointer-events-none" data-opacity={opacity}>
@@ -218,5 +187,3 @@ export default function BackgroundMycelium2D() {
     </div>
   );
 }
-
-
