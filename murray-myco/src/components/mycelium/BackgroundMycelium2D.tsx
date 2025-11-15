@@ -183,7 +183,11 @@ export default function BackgroundMycelium2D() {
 
   return (
     <div aria-hidden className="myco-bg fixed inset-0 z-0 pointer-events-none" data-opacity={opacity}>
+      {!mounted && <div style={{ position: 'fixed', top: 10, left: 10, color: 'white', zIndex: 9999 }}>DLA2D Loading...</div>}
       <canvas ref={canvasRef} className="myco-canvas" />
+      <div style={{ position: 'fixed', bottom: 10, left: 10, color: 'white', zIndex: 9999, fontSize: '12px' }}>
+        DLA2D Active - Tree: {treeRef.current.length} Walkers: {walkersRef.current.length}
+      </div>
     </div>
   );
 }
