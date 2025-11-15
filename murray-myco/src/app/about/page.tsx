@@ -1,7 +1,7 @@
 export default function AboutPage() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
-      <h1 className="text-3xl md:text-5xl font-semibold tracking-tight mb-8">Mechatronics to Mushrooms</h1>
+      <h1 className="text-3xl md:text-5xl font-semibold tracking-tight mb-8">Mechatronics to Mycellium</h1>
 
       <div className="space-y-8 text-foreground/90 leading-relaxed">
         <div>
