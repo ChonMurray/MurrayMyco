@@ -55,7 +55,6 @@ export default function BackgroundMycelium2D() {
   // Mount effect
   useEffect(() => {
     setMounted(true);
-    console.log("[DLA2D] Component mounted");
   }, []);
 
   // Resolve CSS color once per mount
@@ -79,25 +78,16 @@ export default function BackgroundMycelium2D() {
     };
     const cssColor = getComputedStyle(document.documentElement).getPropertyValue("--fg-primary") || "#ffffff";
     colorRef.current = parseCssColor(cssColor);
-    console.log("[DLA2D] Color resolved:", colorRef.current);
   }, [mounted]);
 
   useEffect(() => {
     if (!mounted) return;
     const canvas = canvasRef.current;
-    if (!canvas) {
-      console.warn("[DLA2D] Canvas ref is null, skipping");
-      return;
-    }
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      console.error("[DLA2D] 2D context unavailable");
-      return;
-    }
-    console.log("[DLA2D] Animation starting...");
+    if (!ctx) return;
 
     const { gw, gh } = computeGrid();
-    console.log("[DLA2D] Grid size:", gw, "x", gh);
     canvas.width = gw;
     canvas.height = gh;
     ctx.imageSmoothingEnabled = false;
@@ -123,14 +113,12 @@ export default function BackgroundMycelium2D() {
     treeRef.current = [{ x: gw / 2, y: gh / 2, r: 3 }];
     walkersRef.current = [];
     radiusRef.current = Math.min(gw, gh) / 2;
-    console.log("[DLA2D] Seed at:", gw / 2, gh / 2, "Initial radius:", radiusRef.current);
 
     // Spawn initial walkers
     for (let i = 0; i < maxWalkers; i++) {
       radiusRef.current *= shrinkRef.current;
       walkersRef.current.push(createWalker(gw, gh, radiusRef.current));
     }
-    console.log("[DLA2D] Spawned", walkersRef.current.length, "initial walkers");
 
     const loop = () => {
       // Clear background
@@ -173,21 +161,15 @@ export default function BackgroundMycelium2D() {
     };
 
     rafRef.current = requestAnimationFrame(loop);
-    console.log("[DLA2D] Animation loop started");
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", handleResize);
-      console.log("[DLA2D] Animation stopped");
     };
   }, [mounted, maxWalkers, stepsPerFrame, devicePixelRatioCap, gridAlign]);
 
   return (
     <div aria-hidden className="myco-bg fixed inset-0 z-0 pointer-events-none" data-opacity={opacity}>
-      {!mounted && <div style={{ position: 'fixed', top: 10, left: 10, color: 'white', zIndex: 9999 }}>DLA2D Loading...</div>}
       <canvas ref={canvasRef} className="myco-canvas" />
-      <div style={{ position: 'fixed', bottom: 10, left: 10, color: 'white', zIndex: 9999, fontSize: '12px' }}>
-        DLA2D Active - Tree: {treeRef.current.length} Walkers: {walkersRef.current.length}
-      </div>
     </div>
   );
 }
