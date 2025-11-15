@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -19,11 +20,11 @@ export default function Home() {
           Gourmet mushrooms and quality cultures
         </p>
         <div className="mt-8 flex flex-wrap gap-3 justify-center">
-          <a href="/fresh-mushrooms" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">Fresh Mushrooms</a>
-          <a href="/grow-kits" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">Grow Kits</a>
-          <a href="/liquid-cultures" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">Liquid Cultures</a>
-          <a href="/learning-center" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">Learning Center</a>
-          <a href="/about" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">About</a>
+          <Link href="/fresh-mushrooms" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">Fresh Mushrooms</Link>
+          <Link href="/grow-kits" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">Grow Kits</Link>
+          <Link href="/liquid-cultures" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">Liquid Cultures</Link>
+          <Link href="/learning-center" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">Learning Center</Link>
+          <Link href="/about" className="px-5 py-2 rounded-md border border-foreground/50 hover:bg-foreground/10">About</Link>
         </div>
       </div>
     </div>
