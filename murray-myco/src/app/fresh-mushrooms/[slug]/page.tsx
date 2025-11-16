@@ -6,7 +6,7 @@ export async function generateStaticParams() {
   return [
     { slug: "blue-oyster" },
     { slug: "lions-mane" },
-    { slug: "shiitake" },
+    { slug: "pink-oyster" },
   ];
 }
 

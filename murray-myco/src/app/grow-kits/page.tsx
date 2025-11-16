@@ -2,22 +2,22 @@ import ProductCard from "@/components/cards/ProductCard";
 
 const kits = [
   {
-    title: "Oyster Mushroom Starter Kit",
+    title: "Blue Oyster",
     description: "Complete kit with substrate, culture, and instructions. Perfect for beginners.",
-    image: "/placeholder-mushroom.jpg",
-    slug: "oyster-starter-kit",
+    image: "/images/grow_bag_transparent.png",
+    slug: "blue-oyster-kit",
   },
   {
-    title: "Lion's Mane Grow Kit",
+    title: "Lion's Mane",
     description: "Everything needed to grow your own Lion's Mane at home. Includes detailed guide.",
-    image: "/placeholder-mushroom.jpg",
+    image: "/images/grow_bag_transparent.png",
     slug: "lions-mane-kit",
   },
   {
-    title: "Shiitake Log Kit",
-    description: "Traditional log cultivation method. Long-term production for years to come.",
-    image: "/placeholder-mushroom.jpg",
-    slug: "shiitake-log-kit",
+    title: "Pink Oyster",
+    description: "Fast-growing kit with beautiful pink mushrooms. Great for first-time growers.",
+    image: "/images/grow_bag_transparent.png",
+    slug: "pink-oyster-kit",
   },
 ];
 

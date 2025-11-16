@@ -9,6 +9,7 @@ const isMobile = typeof window !== 'undefined' &&
 export type MyceliumSettings = {
   algorithm: "dla" | "slime";
   opacity: number;
+  showWalkingParticles: boolean;
   // DLA settings
   devicePixelRatioCap: number;
   gridAlign: number;
@@ -31,10 +32,12 @@ export type MyceliumSettings = {
 export const useMyceliumSettings = create<
   MyceliumSettings & {
     setOpacity: (v: number) => void;
+    setShowWalkingParticles: (v: boolean) => void;
   }
 >((set) => ({
   algorithm: "dla",
   opacity: 1,
+  showWalkingParticles: true,
   // DLA settings
   devicePixelRatioCap: isMobile ? 0.35 : 0.5,
   gridAlign: 32,
@@ -53,4 +56,5 @@ export const useMyceliumSettings = create<
   slimeSpawnRadiusFrac: 0.03,
   slimeDiffuse: 0.08,
   setOpacity: (v: number) => set({ opacity: Math.min(1, Math.max(0, v)) }),
+  setShowWalkingParticles: (v: boolean) => set({ showWalkingParticles: v }),
 }));

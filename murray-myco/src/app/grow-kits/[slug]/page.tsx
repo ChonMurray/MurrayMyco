@@ -4,9 +4,9 @@ interface KitPageProps {
 
 export async function generateStaticParams() {
   return [
-    { slug: "oyster-starter-kit" },
+    { slug: "blue-oyster-kit" },
     { slug: "lions-mane-kit" },
-    { slug: "shiitake-log-kit" },
+    { slug: "pink-oyster-kit" },
   ];
 }
 

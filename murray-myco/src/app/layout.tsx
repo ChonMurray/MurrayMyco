@@ -46,9 +46,9 @@ export default function RootLayout({
     <html lang="en" className="dark" style={{ colorScheme: 'dark', backgroundColor: '#16161d' }}>
       <body className={`${inter.variable} ${sourceSans.variable} antialiased bg-background text-foreground`} style={{ backgroundColor: '#16161d', color: '#ffffff' }}>
         <Providers>
-          <Navbar />
           <BackgroundToggle />
-          <main className="min-h-screen pt-16 text-white">
+          <Navbar />
+          <main className="relative pt-16 text-white" style={{ zIndex: 1 }}>
             <PageTransition>{children}</PageTransition>
           </main>
         </Providers>

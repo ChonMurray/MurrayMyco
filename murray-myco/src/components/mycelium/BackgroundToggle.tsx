@@ -1,12 +1,9 @@
 "use client";
 
-import { useMyceliumSettings } from "@/state/useMyceliumSettings";
-import BackgroundMycelium2D from "./BackgroundMycelium2D";
-import BackgroundSlimeGPU from "./BackgroundSlimeGPU";
+import DLABackground from "./DLABackground";
 
 export default function BackgroundToggle() {
-  const { algorithm } = useMyceliumSettings();
-  return algorithm === "slime" ? <BackgroundSlimeGPU /> : <BackgroundMycelium2D />;
+  return <DLABackground />;
 }
 
 

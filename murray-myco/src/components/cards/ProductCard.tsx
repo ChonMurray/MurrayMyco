@@ -19,23 +19,28 @@ export default function ProductCard({
   return (
     <Link
       href={`/${category}/${slug}`}
-      className="group block border border-foreground/20 rounded-lg overflow-hidden hover:border-foreground/40 transition-colors"
+      className="group block backdrop-blur-[2px] bg-background/50 border border-white/10 rounded-lg overflow-hidden hover:border-white/20 transition-colors"
     >
-      <div className="aspect-square relative bg-foreground/5">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          className="object-cover"
-        />
-      </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground/80 transition-colors">
-          {title}
-        </h3>
-        <p className="text-sm text-foreground/70 line-clamp-3">
-          {description}
-        </p>
+      <div className="flex flex-col">
+        <div className="flex items-center justify-center py-4">
+          <div className="relative w-1/2 aspect-square">
+            <Image
+              src={image}
+              alt={title}
+              width={400}
+              height={400}
+              className="w-full h-full object-contain"
+            />
+          </div>
+        </div>
+        <div className="px-4 pb-4">
+          <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground/80 transition-colors">
+            {title}
+          </h3>
+          <p className="text-sm text-foreground/70 line-clamp-3">
+            {description}
+          </p>
+        </div>
       </div>
     </Link>
   );

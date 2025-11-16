@@ -18,7 +18,7 @@ export default function PostCard({
   return (
     <Link
       href={`/learning-center/${slug}`}
-      className="group block border border-foreground/20 rounded-lg p-6 hover:border-foreground/40 transition-colors"
+      className="group block backdrop-blur-[2px] bg-background/50 border border-white/10 rounded-lg p-6 hover:border-white/20 transition-colors"
     >
       <div className="flex items-start justify-between gap-4 mb-3">
         <h3 className="text-xl font-semibold group-hover:text-foreground/80 transition-colors">

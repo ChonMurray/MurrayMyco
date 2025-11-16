@@ -14,10 +14,10 @@ const cultures = [
     slug: "lions-mane-lc",
   },
   {
-    title: "Shiitake LC",
+    title: "Pink Oyster LC",
     description: "Premium culture for substrate inoculation. Verified clean and vigorous.",
     image: "/placeholder-mushroom.jpg",
-    slug: "shiitake-lc",
+    slug: "pink-oyster-lc",
   },
 ];
 

@@ -11,7 +11,7 @@ export function Navbar() {
   if (pathname === "/dla") return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-background/50 border-b border-black/5 dark:border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-[2px] bg-background/50 border-b border-black/5 dark:border-white/10">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Logo - Left aligned */}
         <NavLink href="/" className="font-semibold tracking-wide" style={{ textDecoration: 'none' }}>Murray Myco</NavLink>
@@ -53,7 +53,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-white/10 bg-[#16161d]/98 backdrop-blur-md">
+        <div className="md:hidden border-b border-white/10 bg-[#16161d]/98 backdrop-blur-[2px]">
           <div className="px-4 py-3 space-y-1">
             <NavLink
               href="/fresh-mushrooms"

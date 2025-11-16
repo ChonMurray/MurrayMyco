@@ -4,20 +4,20 @@ const products = [
   {
     title: "Blue Oyster",
     description: "Delicate, savory flavor with a tender texture. Perfect for stir-fries and soups.",
-    image: "/placeholder-mushroom.jpg",
+    image: "/images/blue_oyster_transparent.png",
     slug: "blue-oyster",
   },
   {
     title: "Lion's Mane",
     description: "Unique seafood-like flavor and texture. Excellent for gourmet dishes.",
-    image: "/placeholder-mushroom.jpg",
+    image: "/images/lions_mane_transparent.png",
     slug: "lions-mane",
   },
   {
-    title: "Shiitake",
-    description: "Rich, umami flavor that adds depth to any dish. A culinary favorite.",
-    image: "/placeholder-mushroom.jpg",
-    slug: "shiitake",
+    title: "Pink Oyster",
+    description: "Vibrant pink color with a delicate, slightly fruity flavor. Beautiful and delicious.",
+    image: "/images/pink_oyster_transparent.png",
+    slug: "pink-oyster",
   },
 ];
 
