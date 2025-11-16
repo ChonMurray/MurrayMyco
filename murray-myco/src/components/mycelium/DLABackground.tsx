@@ -18,7 +18,6 @@ const SPAWN_BUFFER = 30;
 const RESPAWN_DISTANCE = 100;
 const TAPERED_WIDTH_MIN = 0.1;
 const TAPERED_WIDTH_MAX = 1.0;
-const GENERATION_TAPER_RATE = 0.005;
 const WALKING_PARTICLE_RADIUS = 0.0;
 const ZOOM_SCALE = 1; // Scale factor for "zooming in" - higher = more zoomed in
 const ROTATION_ANGLE = 45; // Rotation angle in degrees (0-360)

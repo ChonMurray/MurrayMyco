@@ -1,11 +1,11 @@
 "use client";
 
-import BackgroundMycelium2D from "@/components/mycelium/BackgroundMycelium2D";
+import DLABackground from "@/components/mycelium/DLABackground";
 
 export default function DlaPage() {
   return (
     <div className="min-h-screen w-full">
-      <BackgroundMycelium2D />
+      <DLABackground />
     </div>
   );
 }
