@@ -2,13 +2,7 @@ interface KitPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return [
-    { slug: "blue-oyster-kit" },
-    { slug: "lions-mane-kit" },
-    { slug: "pink-oyster-kit" },
-  ];
-}
+export const dynamic = 'force-dynamic';
 
 export default async function KitPage({ params }: KitPageProps) {
   const { slug } = await params;

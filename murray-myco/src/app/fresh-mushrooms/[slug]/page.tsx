@@ -2,13 +2,7 @@ interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return [
-    { slug: "blue-oyster" },
-    { slug: "lions-mane" },
-    { slug: "pink-oyster" },
-  ];
-}
+export const dynamic = 'force-dynamic';
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;

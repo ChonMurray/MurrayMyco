@@ -1,6 +1,8 @@
 import ProductCard from "@/components/cards/ProductCard";
 import { getProductsByCategory } from "@/lib/products";
 
+export const dynamic = 'force-dynamic';
+
 export default async function LiquidCulturesPage() {
   const cultures = await getProductsByCategory("liquid-cultures");
 

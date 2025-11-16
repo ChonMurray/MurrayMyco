@@ -2,16 +2,7 @@ interface PostPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return [
-    { slug: "sterile-technique-fundamentals" },
-    { slug: "liquid-culture-preparation" },
-    { slug: "substrate-recipes" },
-    { slug: "environmental-control" },
-    { slug: "diy-equipment" },
-    { slug: "troubleshooting" },
-  ];
-}
+export const dynamic = 'force-dynamic';
 
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
