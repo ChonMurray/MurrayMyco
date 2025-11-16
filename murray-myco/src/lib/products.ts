@@ -1,10 +1,14 @@
 import { prisma } from "./prisma";
 import type { Product, Variant, Category } from "@prisma/client";
+import { getMockProductsByCategory } from "./mock-data";
 
 export type ProductWithVariants = Product & {
   variants: Variant[];
   category: Category;
 };
+
+// Check if we should use mock data (for builds without real database)
+const useMockData = process.env.DATABASE_URL?.includes('mockdb') || process.env.DATABASE_URL?.includes('localhost:5432');
 
 /**
  * Get all categories
@@ -28,6 +32,10 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
  * Get all products for a specific category
  */
 export async function getProductsByCategory(categorySlug: string): Promise<ProductWithVariants[]> {
+  if (useMockData) {
+    return getMockProductsByCategory(categorySlug) as ProductWithVariants[];
+  }
+
   return await prisma.product.findMany({
     where: {
       category: {

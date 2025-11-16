@@ -2,7 +2,13 @@ interface CulturePageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamic = 'force-dynamic';
+export async function generateStaticParams() {
+  return [
+    { slug: "blue-oyster-lc" },
+    { slug: "lions-mane-lc" },
+    { slug: "pink-oyster-lc" },
+  ];
+}
 
 export default async function CulturePage({ params }: CulturePageProps) {
   const { slug } = await params;
