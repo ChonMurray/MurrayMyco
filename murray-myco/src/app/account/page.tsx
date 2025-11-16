@@ -5,6 +5,8 @@ import { formatPrice } from "@/lib/products";
 import GlassCard from "@/components/ui/GlassCard";
 import Button from "@/components/ui/Button";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AccountPage() {
   const session = await auth();
 
