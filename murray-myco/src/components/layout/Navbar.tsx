@@ -1,7 +1,6 @@
 "use client";
 
 import NavLink from "@/components/common/NavLink";
-import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCart } from "@/state/useCart";
 import { ShoppingCart, Menu, X, User, LogOut, Package, Settings } from "lucide-react";
@@ -11,7 +10,6 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 
 export function Navbar() {
-  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);

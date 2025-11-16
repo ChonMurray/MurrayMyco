@@ -10,8 +10,8 @@ export async function POST(request: Request) {
       { message: "User created successfully", user },
       { status: 201 }
     );
-  } catch (error: any) {
-    if (error.message === "User with this email already exists") {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message === "User with this email already exists") {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 

@@ -1,14 +1,14 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import GlassCard from "@/components/ui/GlassCard";
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -37,7 +37,7 @@ export default function SignInPage() {
         router.push(callbackUrl);
         router.refresh();
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
@@ -135,7 +135,7 @@ export default function SignInPage() {
           </form>
 
           <div className="mt-6 text-center text-sm">
-            <span className="text-foreground/60">Don't have an account? </span>
+            <span className="text-foreground/60">Don&apos;t have an account? </span>
             <Link
               href="/auth/signup"
               className="text-foreground hover:underline font-medium"
@@ -146,5 +146,25 @@ export default function SignInPage() {
         </GlassCard>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center px-4 py-16">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-semibold mb-2">Sign In</h1>
+            <p className="text-foreground/60">Welcome back to Murray Myco</p>
+          </div>
+          <GlassCard className="p-8">
+            <div className="text-center text-foreground/60">Loading...</div>
+          </GlassCard>
+        </div>
+      </div>
+    }>
+      <SignInForm />
+    </Suspense>
   );
 }

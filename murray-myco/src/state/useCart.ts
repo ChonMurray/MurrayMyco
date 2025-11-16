@@ -2,7 +2,6 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { Variant } from "@prisma/client";
 
 export interface CartItem {
   variantId: string;

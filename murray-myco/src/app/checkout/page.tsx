@@ -3,7 +3,6 @@
 import { useCart } from "@/state/useCart";
 import { formatPrice } from "@/lib/products";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart, ArrowLeft } from "lucide-react";
@@ -12,9 +11,8 @@ import Input from "@/components/ui/Input";
 import GlassCard from "@/components/ui/GlassCard";
 
 export default function CheckoutPage() {
-  const router = useRouter();
   const { data: session } = useSession();
-  const { items, getSubtotal, getTotalItems } = useCart();
+  const { items, getSubtotal } = useCart();
   const [mounted, setMounted] = useState(false);
 
   const [shippingInfo, setShippingInfo] = useState({
@@ -36,7 +34,6 @@ export default function CheckoutPage() {
   }, [session]);
 
   const subtotal = mounted ? getSubtotal() : 0;
-  const totalItems = mounted ? getTotalItems() : 0;
 
   // Placeholder shipping calculation
   const shippingCost = 0; // TODO: Calculate with Shippo

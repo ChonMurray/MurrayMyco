@@ -12,7 +12,6 @@ export default function PostCard({
   title,
   description,
   date,
-  category,
   slug,
 }: PostCardProps) {
   return (

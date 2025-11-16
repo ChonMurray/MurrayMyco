@@ -29,10 +29,10 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, CombinedProps>(
     if ('href' in props && props.href) {
       return (
         <Link
-          ref={ref as any}
+          ref={ref as React.Ref<HTMLAnchorElement>}
           href={props.href}
           className={combinedClassName}
-          {...(props as any)}
+          {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
         >
           {children}
         </Link>
@@ -40,7 +40,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, CombinedProps>(
     }
 
     return (
-      <button ref={ref as any} className={combinedClassName} {...(props as any)}>
+      <button ref={ref as React.Ref<HTMLButtonElement>} className={combinedClassName} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}>
         {children}
       </button>
     );

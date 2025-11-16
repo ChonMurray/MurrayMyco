@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/products";
-import Link from "next/link";
 import GlassCard from "@/components/ui/GlassCard";
 import Button from "@/components/ui/Button";
 
