@@ -40,23 +40,58 @@ const posts = [
 ];
 
 export default function LearningCenterPage() {
+  // Group posts by category
+  const groupedPosts = posts.reduce((acc, post) => {
+    const category = post.category || "Other";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(post);
+    return acc;
+  }, {} as Record<string, typeof posts>);
+
+  // Define category order and descriptions
+  const categories = [
+    { name: "Technique", description: "Essential practices and methodologies for contamination-free cultivation" },
+    { name: "Tutorial", description: "Step-by-step guides for specific cultivation processes" },
+    { name: "Guide", description: "In-depth resources for optimizing your cultivation setup" },
+    { name: "DIY", description: "Build your own equipment with open-source designs and instructions" },
+  ];
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
       <h1 className="text-3xl md:text-5xl font-semibold tracking-tight mb-4">Learning Center</h1>
-      <p className="text-foreground/70 mb-12 max-w-2xl">
+      <p className="text-foreground/70 mb-16 max-w-2xl">
         Open-source cultivation knowledge, techniques, and methodologies. A growing collection of tutorials, guides, and documented processes.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {posts.map((post) => (
-          <PostCard
-            key={post.slug}
-            title={post.title}
-            description={post.description}
-            category={post.category}
-            slug={post.slug}
-          />
-        ))}
+      {/* Separate subsections for each category */}
+      <div className="space-y-16">
+        {categories.map((category) => {
+          const categoryPosts = groupedPosts[category.name] || [];
+          if (categoryPosts.length === 0) return null;
+
+          return (
+            <div key={category.name}>
+              <div className="mb-6">
+                <h2 className="text-2xl md:text-3xl font-semibold mb-2">{category.name}</h2>
+                <p className="text-foreground/60 text-sm max-w-2xl">{category.description}</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {categoryPosts.map((post) => (
+                  <PostCard
+                    key={post.slug}
+                    title={post.title}
+                    description={post.description}
+                    category={post.category}
+                    slug={post.slug}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

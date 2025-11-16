@@ -12,14 +12,14 @@ const CELL_SIZE = 2;
 const PARTICLE_COUNT = isMobile ? 500 : 2000;
 const MIN_SPAWN_RADIUS = 30;
 const STUCK_RADIUS = 2;
-const MAX_STUCK = isMobile ? 20000 : 100000;
+const MAX_STUCK = isMobile ? 2000 : 10000;
 const ANGLE_BUCKETS = 360;
 const SPAWN_BUFFER = 30;
 const RESPAWN_DISTANCE = 100;
 const TAPERED_WIDTH_MIN = 0.1;
 const TAPERED_WIDTH_MAX = 1.0;
 const WALKING_PARTICLE_RADIUS = 0.0;
-const ZOOM_SCALE = 1; // Scale factor for "zooming in" - higher = more zoomed in
+const ZOOM_SCALE = 2; // Scale factor for "zooming in" - higher = more zoomed in
 const ROTATION_ANGLE = 45; // Rotation angle in degrees (0-360)
 const MYCELIUM_COLOR = "255, 255, 255"; // RGB values for mycelium color (default: white)
 const MYCELIUM_ALPHA = 0.1; // Alpha/opacity of mycelium lines (0.0 - 1.0)
@@ -59,8 +59,18 @@ export default function DLABackground() {
 
     // Set canvas size to window size with device pixel ratio
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Calculate canvas size needed to cover viewport when rotated
+    // For a rotated rectangle, we need to expand to cover the bounding box
+    const rotationRad = (ROTATION_ANGLE * Math.PI) / 180;
+    const cos = Math.abs(Math.cos(rotationRad));
+    const sin = Math.abs(Math.sin(rotationRad));
+
+    // Bounding box dimensions when rotated
+    const width = viewportWidth * cos + viewportHeight * sin;
+    const height = viewportWidth * sin + viewportHeight * cos;
 
     canvas.width = width * dpr;
     canvas.height = height * dpr;
@@ -75,10 +85,8 @@ export default function DLABackground() {
     const logicalWidth = width / ZOOM_SCALE;
     const logicalHeight = height / ZOOM_SCALE;
 
-    // Apply rotation around center
-    ctx.translate(logicalWidth / 2, logicalHeight / 2);
-    ctx.rotate((ROTATION_ANGLE * Math.PI) / 180);
-    ctx.translate(-logicalWidth / 2, -logicalHeight / 2);
+    // Note: Rotation is now handled via CSS transform to avoid coordinate system misalignment
+    // The DLA algorithm works in unrotated space for proper spatial calculations
 
     // DLA State
     const stuck: StuckParticle[] = [];
@@ -352,8 +360,15 @@ export default function DLABackground() {
     >
       <canvas
         ref={canvasRef}
-        className="w-full h-full"
-        style={{ imageRendering: "crisp-edges", display: "block" }}
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          imageRendering: "crisp-edges",
+          display: "block",
+          transform: `translate(-50%, -50%) rotate(${ROTATION_ANGLE}deg)`,
+          transformOrigin: "center center"
+        }}
       />
     </div>
   );

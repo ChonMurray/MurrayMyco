@@ -24,6 +24,7 @@ model Category {
 model Product {
   id            String        @id @default(cuid())
   sku           String        @unique
+  slug          String        @unique  // URL-friendly identifier
   name          String
   summary       String?
   detailsMd     String?       // rich product detail
@@ -56,4 +57,107 @@ model ProductRelation {
   strength    Int     @default(1)
   from        Product @relation("ProductRelations", fields: [fromId], references: [id])
   to          Product @relation("ProductRelatedTo", fields: [toId], references: [id])
+}
+
+// NextAuth.js models
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // For credentials provider (hashed)
+  role          String    @default("user") // "user" or "admin"
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+  addresses     Address[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// E-commerce models
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  postalCode String
+  country    String  @default("US")
+  isDefault  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String?     // Optional - allow guest checkout
+  user            User?       @relation(fields: [userId], references: [id])
+  email           String      // Store email for guest orders
+  status          String      @default("pending") // pending, paid, processing, shipped, delivered, cancelled
+  subtotalCents   Int
+  shippingCents   Int
+  taxCents        Int
+  totalCents      Int
+  shippingName    String
+  shippingLine1   String
+  shippingLine2   String?
+  shippingCity    String
+  shippingState   String
+  shippingZip     String
+  shippingCountry String      @default("US")
+  stripeSessionId String?     @unique
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id            String  @id @default(cuid())
+  orderId       String
+  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId     String
+  productName   String  // Snapshot product name
+  variantName   String  // Snapshot variant name
+  priceCents    Int     // Snapshot price at time of purchase
+  quantity      Int
+  createdAt     DateTime @default(now())
 }
