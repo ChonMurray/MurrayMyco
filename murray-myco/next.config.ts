@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export', // Enable static export for GitHub Pages
+  // Only use static export for GitHub Pages builds
+  // Vercel doesn't need this and it breaks API routes
+  ...(process.env.BUILD_TARGET === 'static' ? { output: 'export' } : {}),
   images: {
     unoptimized: true,
   },

@@ -21,8 +21,8 @@ const TAPERED_WIDTH_MAX = 1.0;
 const WALKING_PARTICLE_RADIUS = 0.0;
 const ZOOM_SCALE = 2; // Scale factor for "zooming in" - higher = more zoomed in
 const ROTATION_ANGLE = 45; // Rotation angle in degrees (0-360)
-const MYCELIUM_COLOR = "255, 255, 255"; // RGB values for mycelium color (default: white)
-const MYCELIUM_ALPHA = 0.1; // Alpha/opacity of mycelium lines (0.0 - 1.0)
+const MYCELIUM_COLOR = "69, 69, 69"; // RGB values for mycelium color (default: white)
+const MYCELIUM_ALPHA = 1.0; // Alpha/opacity of mycelium lines (0.0 - 1.0)
 const UPDATES_PER_FRAME = 10; // Number of update iterations per animation frame (higher = faster growth)
 
 interface StuckParticle {
