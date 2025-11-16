@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
-    "build:static": "npm run prebuild:static && BUILD_TARGET=static next build && npm run postbuild:static",
+    "build": "prisma generate && next build",
+    "build:static": "npm run prebuild:static && prisma generate && BUILD_TARGET=static next build && npm run postbuild:static",
     "prebuild:static": "[ -d src/app/api ] && mv src/app/api src/app/_api_disabled || true && [ -d src/app/account ] && mv src/app/account src/app/_account_disabled || true",
     "postbuild:static": "[ -d src/app/_api_disabled ] && mv src/app/_api_disabled src/app/api || true && [ -d src/app/_account_disabled ] && mv src/app/_account_disabled src/app/account || true",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "next lint",
     "prisma": "prisma",
