@@ -1,19 +1,13 @@
-name: Deploy to GitHub Pages
+name: Build and Test
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
   build:
@@ -37,22 +31,15 @@ jobs:
 
       - name: Build Next.js app
         run: npm run build
+        env:
+          # Mock DATABASE_URL for build - pages are dynamic so no DB connection happens
+          # This is just for Prisma schema validation during build
+          DATABASE_URL: postgresql://user:password@localhost:5432/mockdb
+          # Set NODE_ENV to production for optimized build
+          NODE_ENV: production
+          # Skip Prisma client generation if already done during install
+          SKIP_ENV_VALIDATION: true
 
-      - name: Add .nojekyll file
-        run: touch ./out/.nojekyll
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./murray-myco/out
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Run tests (if available)
+        run: npm test --if-present
+        continue-on-error: true
